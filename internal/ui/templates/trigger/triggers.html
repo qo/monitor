@@ -1,0 +1,30 @@
+{{ define "title" }}
+  Triggers
+{{ end }}
+
+{{ define "body" }}
+  <div
+    id="triggers"
+    class="flex flex-col items-center gap-10"
+  >
+    {{range .}}
+      {{ template "trigger" . }}
+    {{end}}
+  </div>
+  <div
+    class="flex flex-col items-center gap-10"
+  >
+    <div
+      class="flex flex-row justify-end w-full max-w-xs mt-10"
+    >
+      <button
+        hx-get="/triggers/new"
+        hx-target="#triggers"
+        hx-swap="beforeend"
+        class="btn"
+      >
+        New
+      </button>
+    </div>
+  </div>
+{{ end }}

@@ -1,0 +1,92 @@
+{{ define "task" }}
+  <div
+    hx-target="this"
+    hx-swap="outerHTML"
+    class="flex flex-col gap-4 w-full max-w-xs"
+  >
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Service
+        </span>
+      </div>
+      <input
+        type="text"
+        value="{{.Service}}"
+        class="input input-bordered"
+        disabled
+      />
+    </label>
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Metric
+        </span>
+      </div>
+      <input
+        type="text"
+        value="{{.Metric}}"
+        class="input input-bordered"
+        disabled
+      />
+    </label>
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Value
+        </span>
+      </div>
+      <input
+        type="text"
+        value="{{.Value}}"
+        class="input input-bordered"
+        disabled
+      />
+    </label>
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Worker
+        </span>
+      </div>
+      <select
+        class="select select-bordered w-full max-w-xs"
+        disabled
+      >
+        <option
+          selected
+        >
+          {{if not .Worker }}
+            Not assigned
+          {{else}}
+            {{.Worker}}
+          {{end}}
+        </option>
+      </select>
+    </label>
+  </div>
+{{ end }}

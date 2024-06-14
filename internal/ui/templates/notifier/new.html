@@ -1,0 +1,48 @@
+{{ define "new" }}
+  <form
+    hx-target="this"
+    hx-swap="outerHTML"
+    class="flex flex-col gap-4 w-full max-w-xs"
+  >
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Messenger
+        </span>
+      </div>
+      <select
+        class="select select-bordered"
+        name="messenger"
+      >
+        {{ range . }}
+          <option
+            value="{{ .Name }}"
+          >
+            {{ .Name }}
+          </option>
+        {{ end }}
+      </select>
+    </label>
+    <div
+      class="flex flex-row justify-end gap-4 self-end"
+    >
+      <button
+        class="btn btn-primary"
+        hx-post="/notifier"
+      >
+        Save
+      </button>
+      <button
+        class="btn btn-error"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+{{ end }}

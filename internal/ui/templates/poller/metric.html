@@ -1,0 +1,15 @@
+{{ define "metric" }}
+  <select
+    id="metric"
+    class="select select-bordered"
+    name="metric"
+  >
+    {{ range . }}
+      <option
+        value="{{ .Name }}"
+      >
+        {{ .Name }}
+      </option>
+    {{ end }}
+  </select>
+{{ end }}

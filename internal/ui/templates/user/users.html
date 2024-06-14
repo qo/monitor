@@ -1,0 +1,31 @@
+{{ define "title" }}
+  Users
+{{ end }}
+
+{{ define "body" }}
+  <div
+    id="users"
+    class="flex flex-col items-center gap-10"
+  >
+    {{range .}}
+      {{ template "user" . }}
+    {{end}}
+  </div>
+  <div
+    id="users"
+    class="flex flex-col items-center gap-10"
+  >
+    <div
+      class="flex flex-row justify-end w-full max-w-xs mt-10"
+    >
+      <button
+        hx-get="/users/new"
+        hx-target="#users"
+        hx-swap="beforeend"
+        class="btn"
+      >
+        New
+      </button>
+    </div>
+  </div>
+{{ end }}

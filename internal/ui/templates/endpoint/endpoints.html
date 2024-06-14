@@ -1,0 +1,31 @@
+{{ define "title" }}
+  Endpoints
+{{ end }}
+
+{{ define "body" }}
+  <div
+    id="endpoints"
+    class="flex flex-col items-center gap-10"
+  >
+    {{range .}}
+      {{ template "endpoint" . }}
+    {{end}}
+  </div>
+  <div
+    id="endpoints"
+    class="flex flex-col items-center gap-10"
+  >
+    <div
+      class="flex flex-row justify-end w-full max-w-xs mt-10"
+    >
+      <button
+        hx-get="/endpoints/new"
+        hx-target="#endpoints"
+        hx-swap="beforeend"
+        class="btn"
+      >
+        New
+      </button>
+    </div>
+  </div>
+{{ end }}

@@ -1,0 +1,14 @@
+{{ define "title" }}
+  Tasks
+{{ end }}
+
+{{ define "body" }}
+  <div
+    id="tasks"
+    class="flex flex-col items-center gap-10"
+  >
+    {{range .}}
+      {{ template "task" . }}
+    {{end}}
+  </div>
+{{ end }}

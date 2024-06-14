@@ -1,0 +1,111 @@
+{{ define "new" }}
+  <form
+    hx-target="this"
+    hx-swap="outerHTML"
+    class="flex flex-col gap-4 w-full max-w-xs"
+  >
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Id
+        </span>
+      </div>
+      <input
+        type="text"
+        name="id"
+        placeholder="Id"
+        class="input input-bordered"
+      />
+    </label>
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Description
+        </span>
+      </div>
+      <input
+        type="text"
+        name="description"
+        placeholder="Description"
+        class="input input-bordered"
+      />
+    </label>
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Messenger
+        </span>
+      </div>
+      <select
+        class="select select-bordered"
+        name="messenger"
+      >
+        {{ range .Messengers }}
+          <option
+            value="{{ .Name }}"
+          >
+            {{ .Name }}
+          </option>
+        {{ end }}
+      </select>
+    </label>
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          User
+        </span>
+      </div>
+      <select
+        class="select select-bordered"
+        name="user"
+      >
+        {{ range .Users }}
+          <option
+            value="{{ .Username }}"
+          >
+            {{ .Username }}
+          </option>
+        {{ end }}
+      </select>
+    </label>
+    <div
+      class="flex flex-row justify-end gap-4 self-end"
+    >
+      <button
+        class="btn btn-primary"
+        hx-post="/endpoint"
+      >
+        Save
+      </button>
+      <button
+        class="btn btn-error"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+{{ end }}

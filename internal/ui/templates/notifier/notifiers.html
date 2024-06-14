@@ -1,0 +1,31 @@
+{{ define "title" }}
+  Notifiers
+{{ end }}
+
+{{ define "body" }}
+  <div
+    id="notifiers"
+    class="flex flex-col items-center gap-10"
+  >
+    {{range .}}
+      {{ template "notifier" . }}
+    {{end}}
+  </div>
+  <div
+    id="notifiers"
+    class="flex flex-col items-center gap-10"
+  >
+    <div
+      class="flex flex-row justify-end w-full max-w-xs mt-10"
+    >
+      <button
+        hx-get="/notifiers/new"
+        hx-target="#notifiers"
+        hx-swap="beforeend"
+        class="btn"
+      >
+        New
+      </button>
+    </div>
+  </div>
+{{ end }}

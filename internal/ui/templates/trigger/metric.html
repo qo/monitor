@@ -1,0 +1,20 @@
+{{ define "metric" }}
+  <select
+    hx-get="/values-by-metric"
+    hx-target="next #value"
+    hx-swap="outerHTML"
+    hx-trigger="load, change"
+    id="metric"
+    class="select select-bordered"
+    name="metric"
+    hx-include="#form"
+  >
+    {{ range . }}
+      <option
+        value="{{ .Name }}"
+      >
+        {{ .Name }}
+      </option>
+    {{ end }}
+  </select>
+{{ end }}

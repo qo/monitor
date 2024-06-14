@@ -1,0 +1,139 @@
+{{ define "new" }}
+  <form
+    id="form"
+    hx-target="this"
+    hx-swap="outerHTML"
+    class="flex flex-col gap-4 w-full max-w-xs"
+  >
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Service
+        </span>
+      </div>
+      <select
+        hx-get="/metrics-by-service-for-trigger"
+        hx-target="next #metric"
+        hx-swap="outerHTML"
+        hx-trigger="load, change"
+        class="select select-bordered"
+        name="service"
+      >
+        {{ range .Services }}
+          <option
+            value="{{ .Name }}"
+          >
+            {{ .Name }}
+          </option>
+        {{ end }}
+      </select>
+    </label>
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Metric
+        </span>
+      </div>
+      <select
+        id="metric"
+        class="select select-bordered"
+        name="metric"
+      >
+      </select>
+    </label>
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Value
+        </span>
+      </div>
+      <select
+        id="value"
+        class="select select-bordered"
+        name="value"
+      >
+      </select>
+    </label>
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Messenger
+        </span>
+      </div>
+      <select
+        hx-get="/endpoints-by-messenger"
+        hx-target="next #endpoint"
+        hx-swap="outerHTML"
+        hx-trigger="load, change"
+        class="select select-bordered"
+        name="messenger"
+      >
+        {{ range .Messengers }}
+          <option
+            value="{{ .Name }}"
+          >
+            {{ .Name }}
+          </option>
+        {{ end }}
+      </select>
+    </label>
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Endpoint
+        </span>
+      </div>
+      <select
+        id="endpoint"
+        class="select select-bordered"
+        name="endpoint"
+      >
+      </select>
+    </label>
+    <div
+      class="flex flex-row justify-end gap-4 self-end"
+    >
+      <button
+        class="btn btn-primary"
+        hx-post="/trigger"
+      >
+        Save
+      </button>
+      <button
+        class="btn btn-error"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+{{ end }}

@@ -1,0 +1,64 @@
+{{ define "service" }}
+  <div
+    hx-target="this"
+    hx-swap="outerHTML"
+    class="flex flex-col gap-4 w-full max-w-xs"
+  >
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Name
+        </span>
+      </div>
+      <input
+        type="text"
+        placeholder="Name"
+        value="{{.Name}}"
+        class="input input-bordered"
+        disabled
+      />
+    </label>
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Description
+        </span>
+      </div>
+      <input
+        type="text"
+        placeholder="Description"
+        value="{{.Desc}}"
+        class="input input-bordered"
+        disabled
+      />
+    </label>
+    <div
+      class="flex flex-row justify-end gap-4 self-end"
+    >
+      <button
+        hx-get="/services/edit/{{.Name}}"
+        class="btn btn-primary"
+      >
+        Edit
+      </button>
+      <button
+        hx-delete="/services/remove/{{.Name}}"
+        class="btn btn-error"
+      >
+        Remove
+      </button>
+    </div>
+  </div>
+{{ end }}

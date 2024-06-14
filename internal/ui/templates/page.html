@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>
+      {{ template "title" . }}
+    </title>
+    <script
+      src="htmx.min.js"
+    ></script>
+    <link
+      href="daisy.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script
+      src="daisy.min.js"
+    ></script>
+  </head>
+  <body>
+    <div
+      class="flex justify-center align-center p-10"
+    >
+      <h1
+        class="text-xl"
+      >
+        {{ template "title" . }}
+      </h1>
+    </div>
+    {{ template "body" . }}
+  </body>
+</html>

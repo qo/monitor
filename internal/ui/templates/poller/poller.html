@@ -1,0 +1,58 @@
+{{ define "poller" }}
+  <div
+    hx-target="this"
+    hx-swap="outerHTML"
+    class="flex flex-col gap-4 w-full max-w-xs"
+  >
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Service
+        </span>
+      </div>
+      <input
+        type="text"
+        placeholder="Service"
+        value="{{.Service}}"
+        class="input input-bordered"
+        disabled
+      />
+    </label>
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Metric
+        </span>
+      </div>
+      <input
+        type="text"
+        placeholder="Metric"
+        value="{{.Metric}}"
+        class="input input-bordered"
+        disabled
+      />
+    </label>
+    <div
+      class="flex flex-row justify-end gap-4 self-end"
+    >
+      <button
+        hx-delete="/pollers/remove/{{.Service}}/{{.Metric}}"
+        class="btn btn-error"
+      >
+        Remove
+      </button>
+    </div>
+  </div>
+{{ end }}

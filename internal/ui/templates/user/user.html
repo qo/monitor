@@ -1,0 +1,38 @@
+{{ define "user" }}
+  <div
+    hx-target="this"
+    hx-swap="outerHTML"
+    class="flex flex-col gap-4 w-full max-w-xs"
+  >
+    <label
+      class="form-control w-full max-w-xs"
+    >
+      <div
+        class="label"
+      >
+        <span
+          class="label-text"
+        >
+          Username
+        </span>
+      </div>
+      <input
+        type="text"
+        placeholder="Username"
+        value="{{.Username}}"
+        class="input input-bordered"
+        disabled
+      />
+    </label>
+    <div
+      class="flex flex-row justify-end gap-4 self-end"
+    >
+      <button
+        hx-delete="/users/remove/{{.Username}}"
+        class="btn btn-error"
+      >
+        Remove
+      </button>
+    </div>
+  </div>
+{{ end }}

@@ -1,0 +1,15 @@
+{{ define "endpoint" }}
+  <select
+    id="endpoint"
+    class="select select-bordered"
+    name="endpoint"
+  >
+    {{ range . }}
+      <option
+        value="{{ .Name }}"
+      >
+        {{ .Name }}
+      </option>
+    {{ end }}
+  </select>
+{{ end }}
