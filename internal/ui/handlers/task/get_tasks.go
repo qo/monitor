@@ -9,6 +9,8 @@ import (
 // получения страницы с задачами
 func handleGetTasks() error {
 
+	// Получить шаблон
+	// страницы с задачами
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/page.html",
@@ -20,11 +22,16 @@ func handleGetTasks() error {
 	http.HandleFunc(
 		"GET /tasks",
 		func(w http.ResponseWriter, r *http.Request) {
+
+			// Получить все задачи
 			data, err := tasks()
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
+
+			// Заполнить шаблон
+			// страницы с задачами
 			err = tmpl.Execute(
 				w,
 				data,

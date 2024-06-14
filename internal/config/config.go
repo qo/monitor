@@ -46,9 +46,14 @@ func Load() (config, error) {
 
 	errMsg := "can't load config: "
 
+	// Временная конфигурация,
+	// соответствующая JSON-файлу
 	var cj configJson
+
+	// Конфигурация
 	var c config
 
+	// Открыть файл конфигурации
 	file, err := os.Open("monitor.conf")
 	if err != nil {
 		return c,
@@ -60,6 +65,7 @@ func Load() (config, error) {
 	}
 	defer file.Close()
 
+	// Разобрать файл конфигурации в структуру
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(&cj)
 	if err != nil {
@@ -71,10 +77,10 @@ func Load() (config, error) {
 			)
 	}
 
+	// Переменные для конфигурации
 	host := cj.Host
 	port := cj.Port
 	databasePath := cj.DatabasePath
-
 	delay, err := time.ParseDuration(
 		fmt.Sprintf(
 			"%ds",
@@ -90,6 +96,7 @@ func Load() (config, error) {
 			)
 	}
 
+	// Заполнить конфигурацию
 	c = config{
 		host,
 		port,

@@ -9,6 +9,7 @@ import (
 // получения формы для создания мессенджера
 func handleGetNew() error {
 
+	// Шаблон формы для создания мессенджера
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/messenger/new.html",
@@ -18,9 +19,7 @@ func handleGetNew() error {
 	http.HandleFunc(
 		"GET /messengers/new",
 		func(w http.ResponseWriter, r *http.Request) {
-			if err != nil {
-				// TODO: do something
-			}
+			// Заполнить шаблон для создания мессенджера
 			tmpl.ExecuteTemplate(
 				w,
 				"new",

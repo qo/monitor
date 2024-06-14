@@ -9,6 +9,8 @@ import (
 // получения страницы с сервисами
 func handleGetServices() error {
 
+	// Получить шаблон
+	// для страницы с сервисами
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/page.html",
@@ -21,11 +23,16 @@ func handleGetServices() error {
 	http.HandleFunc(
 		"GET /services",
 		func(w http.ResponseWriter, r *http.Request) {
+
+			// Получить все сервисы
 			data, err := services()
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
+
+			// Заполнить шаблон
+			// для страницы с сервисами
 			tmpl.Execute(
 				w,
 				data,

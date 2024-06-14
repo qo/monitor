@@ -6,7 +6,7 @@ import (
 	"github.com/qo/monitor/internal/plugins"
 )
 
-// Подписывающие плагины
+// Список подписывающих плагинов
 var pollerPlugins = []plugins.Poller{
 	httpd_up.Poller,
 	httpd_response.Poller,

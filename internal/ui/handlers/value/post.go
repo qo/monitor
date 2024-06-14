@@ -11,12 +11,15 @@ import (
 // создания значения
 func handlePost() error {
 
+	// Получить шаблон
+	// для формы со значением
 	valueTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/value/value.html",
 		),
 	)
 
+	// Получить шаблон для ошибки 500
 	internalErrorTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/error/error.html",
@@ -30,24 +33,29 @@ func handlePost() error {
 
 			var value db.Value
 
+			// Получить параметры формы
 			service := r.FormValue("service")
-			value.Service = service
-
 			metric := r.FormValue("metric")
-			value.Metric = metric
-
 			name := r.FormValue("name")
-			value.Name = name
-
 			desc := r.FormValue("description")
-			value.Desc = desc
-
 			faultyString := r.FormValue("faulty")
+
+			// Преобразовать строку к bool
 			faulty := faultyString != ""
+
+			// Заполнить данные значения
+			value.Service = service
+			value.Metric = metric
+			value.Name = name
+			value.Desc = desc
 			value.Faulty = faulty
 
-			err := insert(value)
+			// Добавить значение
+			err := insert(
+				value,
+			)
 			if err != nil {
+				// Заполнить шаблон для ошибки 500
 				internalErrorTmpl.ExecuteTemplate(
 					w,
 					"error",
@@ -56,6 +64,8 @@ func handlePost() error {
 				return
 			}
 
+			// Заполнить шаблон
+			// для формы со значением
 			valueTmpl.ExecuteTemplate(
 				w,
 				"value",

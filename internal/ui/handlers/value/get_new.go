@@ -9,6 +9,9 @@ import (
 // получения формы для редактирования значения
 func handleGetNew() error {
 
+	// Получить шаблон
+	// для формы
+	// для создания нового значения
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/value/new.html",
@@ -18,10 +21,16 @@ func handleGetNew() error {
 	http.HandleFunc(
 		"GET /values/new",
 		func(w http.ResponseWriter, r *http.Request) {
+
+			// Получить все сервисы
 			data, err := services()
 			if err != nil {
-				// TODO: do something
+				// TODO: использовать шаблон ошибки 500
 			}
+
+			// Заполнить шаблон
+			// для формы
+			// для создания нового значения
 			tmpl.ExecuteTemplate(
 				w,
 				"new",

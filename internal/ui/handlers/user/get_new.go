@@ -9,6 +9,9 @@ import (
 // получения формы для создания пользователя
 func handleGetNew() error {
 
+	// Получить шаблон
+	// для формы
+	// для создания пользователя
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/user/new.html",
@@ -18,9 +21,9 @@ func handleGetNew() error {
 	http.HandleFunc(
 		"GET /users/new",
 		func(w http.ResponseWriter, r *http.Request) {
-			if err != nil {
-				// TODO: do something
-			}
+			// Заполнить шаблон
+			// для формы
+			// для создания пользователя
 			tmpl.ExecuteTemplate(
 				w,
 				"new",

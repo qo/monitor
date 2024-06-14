@@ -1,7 +1,6 @@
 package poller
 
 import (
-	"log"
 	"net/http"
 	"text/template"
 )
@@ -10,6 +9,8 @@ import (
 // получения страницы с опрашивающими плагинами
 func handleGetPollers() error {
 
+	// Получить шаблон
+	// для страницы с опрашивающими плагинами
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/page.html",
@@ -23,13 +24,15 @@ func handleGetPollers() error {
 		"GET /pollers",
 		func(w http.ResponseWriter, r *http.Request) {
 
+			// Получить все опрашивающие плагины
 			data, err := pollers()
 			if err != nil {
-				log.Fatal(err)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
 
+			// Заполнить шаблон
+			// для страницы с опрашивающими плагинами
 			err = tmpl.Execute(
 				w,
 				data,

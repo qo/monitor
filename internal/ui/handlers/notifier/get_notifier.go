@@ -9,6 +9,8 @@ import (
 // получения формы с публикующим плагином
 func handleGetNotifier() error {
 
+	// Получить шаблон
+	// для формы с публикующим плагином
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/notifier/notifier.html",
@@ -19,8 +21,10 @@ func handleGetNotifier() error {
 		"GET /notifier/{messenger}",
 		func(w http.ResponseWriter, r *http.Request) {
 
+			// Получить значения query-параметров
 			messenger := r.PathValue("messenger")
 
+			// Получить публикующий плагин
 			data, err := notifier(
 				messenger,
 			)
@@ -29,6 +33,8 @@ func handleGetNotifier() error {
 				return
 			}
 
+			// Заполнить шаблон
+			// для формы с публикующим плагином
 			err = tmpl.ExecuteTemplate(
 				w,
 				"notifier",

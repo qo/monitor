@@ -11,6 +11,8 @@ import (
 // редактирования метрики
 func handlePut() error {
 
+	// Получить шаблон
+	// для формы с метрикой
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/metric/metric.html",
@@ -23,21 +25,27 @@ func handlePut() error {
 
 			var metric db.Metric
 
+			// Получить значения query-параметров
 			service := r.FormValue("service")
-			metric.Service = service
-
 			name := r.FormValue("name")
-			metric.Name = name
-
 			desc := r.FormValue("description")
+
+			// Заполнить данные о метрике
+			metric.Service = service
+			metric.Name = name
 			metric.Desc = desc
 
-			err := update(metric)
+			// Обновить метрику
+			err := update(
+				metric,
+			)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
 
+			// Заполнить шаблон
+			// для формы с метрикой
 			tmpl.ExecuteTemplate(
 				w,
 				"metric",

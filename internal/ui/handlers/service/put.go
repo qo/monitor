@@ -11,6 +11,8 @@ import (
 // редактирования сервиса
 func handlePut() error {
 
+	// Получить шаблон
+	// для формы с сервисом
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/service/service.html",
@@ -23,18 +25,25 @@ func handlePut() error {
 
 			var service db.Service
 
+			// Получить параметры формы
 			name := r.FormValue("name")
-			service.Name = name
-
 			desc := r.FormValue("description")
+
+			// Заполнить данные сервиса
+			service.Name = name
 			service.Desc = desc
 
-			err := update(service)
+			// Обновить сервис
+			err := update(
+				service,
+			)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
 
+			// Заполнить шаблон
+			// с формой с сервисом
 			tmpl.ExecuteTemplate(
 				w,
 				"service",

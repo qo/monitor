@@ -1,7 +1,6 @@
 package value
 
 import (
-	"log"
 	"net/http"
 	"text/template"
 )
@@ -10,6 +9,8 @@ import (
 // получения страницы со значениями
 func handleGetValues() error {
 
+	// Получить шаблон
+	// страницы со значениями
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/page.html",
@@ -22,12 +23,16 @@ func handleGetValues() error {
 	http.HandleFunc(
 		"GET /values",
 		func(w http.ResponseWriter, r *http.Request) {
+
+			// Получить все значения
 			data, err := values()
 			if err != nil {
-				log.Fatal(err)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
+
+			// Заполниь шаблон
+			// страницы со значениями
 			err = tmpl.Execute(
 				w,
 				data,

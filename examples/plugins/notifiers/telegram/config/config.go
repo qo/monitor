@@ -24,9 +24,14 @@ type configJson struct {
 	TimeoutSeconds int `json:"timeout_seconds"`
 }
 
+// Загрузить конфигурацию
 func Load() (config, error) {
 
+	// Конфигурация в "сыром" виде
+	// из JSON-файла
 	var cj configJson
+
+	// Конфигурация
 	var c config
 
 	file, err := os.Open(

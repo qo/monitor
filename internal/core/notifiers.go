@@ -5,7 +5,7 @@ import (
 	"github.com/qo/monitor/internal/plugins"
 )
 
-// Публикующие плагины
+// Список публикующих плагинов
 var notifierPlugins = []plugins.Notifier{
 	telegram.Notifier,
 }

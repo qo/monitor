@@ -11,6 +11,7 @@ import (
 // редактирования эндпоинта
 func handlePut() error {
 
+	// Шаблон для формы с эндпоинтом
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/endpoint/endpoint.html",
@@ -23,21 +24,26 @@ func handlePut() error {
 
 			var endpoint db.Endpoint
 
+			// Получить параметры формы
 			messenger := r.FormValue("messenger")
-			endpoint.Messenger = messenger
-
 			id := r.FormValue("id")
-			endpoint.Id = id
-
 			desc := r.FormValue("description")
+
+			// Заполнить эндпоинт данными
+			endpoint.Messenger = messenger
+			endpoint.Id = id
 			endpoint.Desc = desc
 
-			err := update(endpoint)
+			// Обновить эндпоинт
+			err := update(
+				endpoint,
+			)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
 
+			// Заполнить шаблон формы с эндпоинтом
 			tmpl.ExecuteTemplate(
 				w,
 				"endpoint",

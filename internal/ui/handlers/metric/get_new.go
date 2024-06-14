@@ -9,6 +9,9 @@ import (
 // получения формы для создания новой метрики
 func handleGetNew() error {
 
+	// Получить шаблон
+	// для формы
+	// для создания новой метрики
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/metric/new.html",
@@ -18,10 +21,16 @@ func handleGetNew() error {
 	http.HandleFunc(
 		"GET /metrics/new",
 		func(w http.ResponseWriter, r *http.Request) {
+
+			// Получить все сервисы
 			data, err := services()
 			if err != nil {
-				// TODO: do something
+				// TODO: использовать шаблон ошибки 500
 			}
+
+			// Заполнить шаблон
+			// для формы
+			// для создания новой метрики
 			tmpl.ExecuteTemplate(
 				w,
 				"new",

@@ -65,6 +65,7 @@ func (p poller) Value() (
 		return DownValue,
 			nil
 	}
+
 	return UpValue,
 		nil
 }

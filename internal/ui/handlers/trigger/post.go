@@ -11,12 +11,15 @@ import (
 // создания триггера
 func handlePost() error {
 
+	// Получить шаблон
+	// для формы с триггером
 	triggerTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/trigger/trigger.html",
 		),
 	)
 
+	// Получить шаблон ошибки 500
 	internalErrorTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/error/error.html",
@@ -30,23 +33,26 @@ func handlePost() error {
 
 			var trigger db.Trigger
 
+			// Получить значения query-параметров
 			service := r.FormValue("service")
-			trigger.Service = service
-
 			metric := r.FormValue("metric")
-			trigger.Metric = metric
-
 			value := r.FormValue("value")
-			trigger.Value = value
-
 			messenger := r.FormValue("messenger")
-			trigger.Messenger = messenger
-
 			user := r.FormValue("endpoint")
+
+			// Заполнить данные триггера
+			trigger.Service = service
+			trigger.Metric = metric
+			trigger.Value = value
+			trigger.Messenger = messenger
 			trigger.User = user
 
-			err := insert(trigger)
+			// Добавить триггер
+			err := insert(
+				trigger,
+			)
 			if err != nil {
+				// Заполнить шаблон ошибки 500
 				internalErrorTmpl.ExecuteTemplate(
 					w,
 					"error",
@@ -55,6 +61,8 @@ func handlePost() error {
 				return
 			}
 
+			// Заполнить шаблон
+			// для формы с триггером
 			triggerTmpl.ExecuteTemplate(
 				w,
 				"trigger",

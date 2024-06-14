@@ -11,12 +11,16 @@ import (
 // создания публикующего плагина
 func handlePost() error {
 
+	// Получить шаблон
+	// для формы с публикующим плагином
 	notifierTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/notifier/notifier.html",
 		),
 	)
 
+	// Получить шаблон
+	// для ошибки 500
 	internalErrorTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/error/error.html",
@@ -30,13 +34,19 @@ func handlePost() error {
 
 			var notifier db.Notifier
 
+			// Получить параметры формы
 			messenger := r.FormValue("messenger")
+
+			// Заполнить данные публикующего плагина
 			notifier.Messenger = messenger
 
+			// Добавить публикующий плагин
 			err := insert(
 				notifier,
 			)
 			if err != nil {
+				// Заполнить шаблон
+				// для ошибки 500
 				internalErrorTmpl.ExecuteTemplate(
 					w,
 					"error",
@@ -45,6 +55,8 @@ func handlePost() error {
 				return
 			}
 
+			// Заполнить шаблон
+			// для формы с публикующим плагином
 			notifierTmpl.ExecuteTemplate(
 				w,
 				"notifier",

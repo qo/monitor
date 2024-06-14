@@ -9,6 +9,8 @@ import (
 // получения формы для создания нового сервиса
 func handleGetNew() error {
 
+	// Получить шаблон формы
+	// для создания нового сервиса
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/service/new.html",
@@ -18,9 +20,8 @@ func handleGetNew() error {
 	http.HandleFunc(
 		"GET /services/new",
 		func(w http.ResponseWriter, r *http.Request) {
-			if err != nil {
-				// TODO: do something
-			}
+			// Заполнить шаблон формы
+			// для создания нового сервиса
 			tmpl.ExecuteTemplate(
 				w,
 				"new",

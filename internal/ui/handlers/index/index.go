@@ -9,6 +9,7 @@ import (
 // стартовой страницы
 func handleGet() error {
 
+	// Шаблон стартовой страницы
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/page.html",
@@ -19,6 +20,8 @@ func handleGet() error {
 	http.HandleFunc(
 		"GET /",
 		func(w http.ResponseWriter, r *http.Request) {
+
+			// Отобразить шаблон
 			err := tmpl.Execute(
 				w,
 				nil,

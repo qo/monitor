@@ -9,6 +9,9 @@ import (
 // получения формы создания публикующего плагина
 func handleGetNew() error {
 
+	// Получить шаблон
+	// для формы
+	// для создания нового публикующего плагина
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/notifier/new.html",
@@ -19,11 +22,15 @@ func handleGetNew() error {
 		"GET /notifiers/new",
 		func(w http.ResponseWriter, r *http.Request) {
 
+			// Получить все мессенджеры
 			messengers, err := messengers()
 			if err != nil {
-				// TODO: do something
+				// TODO: использовать шаблон ошибки 500
 			}
 
+			// Заполнить шаблон
+			// для формы
+			// для создания нового публикующего плагина
 			tmpl.ExecuteTemplate(
 				w,
 				"new",

@@ -9,6 +9,7 @@ import (
 // удаления пользователя
 func handleDelete() error {
 
+	// Получить шаблон ошибки 500
 	internalErrorTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/error/error.html",
@@ -20,10 +21,15 @@ func handleDelete() error {
 		"DELETE /users/remove/{username}",
 		func(w http.ResponseWriter, r *http.Request) {
 
+			// Получить значения query-параметров
 			username := r.PathValue("username")
 
-			err := remove(username)
+			// Удалить пользователя
+			err := remove(
+				username,
+			)
 			if err != nil {
+				// Заполнить шаблон ошибки 500
 				internalErrorTmpl.ExecuteTemplate(
 					w,
 					"error",

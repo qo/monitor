@@ -6,9 +6,11 @@ import (
 )
 
 // Зарегистрировать обработчик для
-// получения страницы с метриками
+// получения страницы метрик
 func handleGetMetrics() error {
 
+	// Получить шаблон
+	// для страницы метрик
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/page.html",
@@ -21,11 +23,16 @@ func handleGetMetrics() error {
 	http.HandleFunc(
 		"GET /metrics",
 		func(w http.ResponseWriter, r *http.Request) {
+
+			// Получить все метрики
 			data, err := metrics()
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
+
+			// Заполнить шаблон
+			// для страницы метрик
 			tmpl.Execute(
 				w,
 				data,

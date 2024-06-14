@@ -11,12 +11,14 @@ import (
 // создания мессенджера
 func handlePost() error {
 
+	// Шаблон формы с мессенджером
 	messengerTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/messenger/messenger.html",
 		),
 	)
 
+	// Шаблон ошибки 500
 	internalErrorTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/error/error.html",
@@ -30,14 +32,21 @@ func handlePost() error {
 
 			var messenger db.Messenger
 
+			// Получить параметры формы
 			name := r.FormValue("name")
-			messenger.Name = name
-
 			desc := r.FormValue("description")
+
+			// Заполнить данные о мессенджере
+			messenger.Name = name
 			messenger.Desc = desc
 
-			err := insert(messenger)
+			// Добавить мессенджер
+			err := insert(
+				messenger,
+			)
 			if err != nil {
+				// Заполнить шаблон
+				// с ошибкой 500
 				internalErrorTmpl.ExecuteTemplate(
 					w,
 					"error",
@@ -46,6 +55,8 @@ func handlePost() error {
 				return
 			}
 
+			// Заполнить шаблон
+			// формы с мессенджером
 			messengerTmpl.ExecuteTemplate(
 				w,
 				"messenger",

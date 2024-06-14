@@ -9,6 +9,7 @@ import (
 // удаления эндпоинта
 func handleDelete() error {
 
+	// Шаблон для сообщения об ошибке
 	internalErrorTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/error/error.html",
@@ -20,11 +21,17 @@ func handleDelete() error {
 		"DELETE /endpoints/remove/{messenger}/{name}",
 		func(w http.ResponseWriter, r *http.Request) {
 
+			// Получить значения query-параметров
 			messenger := r.PathValue("messenger")
 			name := r.PathValue("name")
 
-			err := remove(messenger, name)
+			// Удалить эндпоинт
+			err := remove(
+				messenger,
+				name,
+			)
 			if err != nil {
+				// Заполнить шаблон с ошибкой
 				internalErrorTmpl.ExecuteTemplate(
 					w,
 					"error",

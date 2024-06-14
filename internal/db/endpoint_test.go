@@ -45,6 +45,7 @@ func TestInsertEndpoint(
 
 	errMsg := "can't test insert endpoint: "
 
+	// Пересоздать БД
 	err := setupDb()
 	if err != nil {
 		t.Fatal(
@@ -55,6 +56,7 @@ func TestInsertEndpoint(
 		)
 	}
 
+	// Открыть БД
 	_db, closer, err := db.Open()
 	if err != nil {
 		t.Fatal(
@@ -66,6 +68,7 @@ func TestInsertEndpoint(
 	}
 	defer closer()
 
+	// Создать таблицы
 	err = _db.CreateTables()
 	if err != nil {
 		t.Fatal(
@@ -76,14 +79,17 @@ func TestInsertEndpoint(
 		)
 	}
 
+	// Валидный мессенджер
 	validMessenger := db.Messenger{
 		Name: "telegram",
 	}
 
+	// Невалидный мессенджер
 	invalidMessenger := db.Messenger{
 		Name: "...",
 	}
 
+	// Добавить валидный мессенджер
 	err = _db.InsertMessenger(
 		validMessenger,
 	)
@@ -96,14 +102,17 @@ func TestInsertEndpoint(
 		)
 	}
 
+	// Валидный пользователь
 	validUser := db.User{
 		Username: "admin",
 	}
 
+	// Невалидный пользователь
 	invalidUser := db.User{
 		Username: "...",
 	}
 
+	// Добавить валидного пользователя
 	err = _db.InsertUser(
 		validUser,
 	)
@@ -116,29 +125,42 @@ func TestInsertEndpoint(
 		)
 	}
 
+	// Валидный эндпоинт
 	validEndpoint := db.Endpoint{
 		Messenger: validMessenger.Name,
 		User:      validUser.Username,
 		Id:        "1",
 	}
 
+	// Невалидные эндпоинты
 	invalidEndpoints := []db.Endpoint{
-		validEndpoint, // duplicate
+
+		// Дупликат валидного эндпоинта.
+		// Является невалидным, так как
+		// не выполняется ограничение PRIMARY KEY
+		validEndpoint,
+
 		{
 			Messenger: invalidMessenger.Name,
 			User:      invalidUser.Username,
 			Id:        "1",
 		},
+
 		{
 			Messenger: validMessenger.Name,
 			User:      invalidUser.Username,
 			Id:        "1",
 		},
+
 		{
 			Messenger: invalidMessenger.Name,
 			User:      validUser.Username,
 			Id:        "1",
 		},
+
+		// Является невалидным, так как
+		// не выполняется условие
+		// на непустую строку в Id
 		{
 			Messenger: validMessenger.Name,
 			User:      validUser.Username,
@@ -146,6 +168,7 @@ func TestInsertEndpoint(
 		},
 	}
 
+	// Добавить валидный эндпоинт
 	err = _db.InsertEndpoint(
 		validEndpoint,
 	)
@@ -158,6 +181,7 @@ func TestInsertEndpoint(
 		)
 	}
 
+	// Добавить невалидные эндпоинты
 	for _, invalidEndpoint := range invalidEndpoints {
 		err = _db.InsertEndpoint(
 			invalidEndpoint,
@@ -185,6 +209,7 @@ func TestSelectAllEndpoints(
 
 	errMsg := "can't test select all endpoints: "
 
+	// Пересоздать БД
 	err := setupDb()
 	if err != nil {
 		t.Fatal(
@@ -195,6 +220,7 @@ func TestSelectAllEndpoints(
 		)
 	}
 
+	// Открыть БД
 	_db, closer, err := db.Open()
 	if err != nil {
 		t.Fatal(
@@ -206,6 +232,7 @@ func TestSelectAllEndpoints(
 	}
 	defer closer()
 
+	// Создать таблицы
 	err = _db.CreateTables()
 	if err != nil {
 		t.Fatal(
@@ -220,6 +247,7 @@ func TestSelectAllEndpoints(
 		Name: "telegram",
 	}
 
+	// Добавить мессенджер
 	err = _db.InsertMessenger(
 		messenger,
 	)
@@ -236,6 +264,7 @@ func TestSelectAllEndpoints(
 		Username: "admin",
 	}
 
+	// Добавить пользователя
 	err = _db.InsertUser(
 		user,
 	)
@@ -254,6 +283,7 @@ func TestSelectAllEndpoints(
 		Id:        "1",
 	}
 
+	// Добавить эндпоинт
 	err = _db.InsertEndpoint(
 		endpoint,
 	)
@@ -266,6 +296,7 @@ func TestSelectAllEndpoints(
 		)
 	}
 
+	// Выбрать все эндпоинты
 	endpoints, err := _db.SelectAllEndpoints()
 	if err != nil {
 		t.Fatal(
@@ -276,6 +307,8 @@ func TestSelectAllEndpoints(
 		)
 	}
 
+	// Если длина списка эндпоинтов не равна 1,
+	// завершить работу с ошибкой
 	if len(endpoints) != 1 {
 		t.Fatal(
 			errors.New(
@@ -289,7 +322,11 @@ func TestSelectAllEndpoints(
 		)
 	}
 
+	// Единственный выбранный эндпоинт
 	selected := endpoints[0]
+
+	// Если эндпоинты не равны,
+	// завершить работу с ошибкой
 	if !equal(
 		endpoint,
 		selected,
@@ -315,6 +352,7 @@ func TestSelectEndpointByMessengerAndUser(
 
 	errMsg := "can't test select endpoint by messenger and user: "
 
+	// Пересоздать БД
 	err := setupDb()
 	if err != nil {
 		t.Fatal(
@@ -325,6 +363,7 @@ func TestSelectEndpointByMessengerAndUser(
 		)
 	}
 
+	// Открыть БД
 	_db, closer, err := db.Open()
 	if err != nil {
 		t.Fatal(
@@ -336,6 +375,7 @@ func TestSelectEndpointByMessengerAndUser(
 	}
 	defer closer()
 
+	// Создать таблицы
 	err = _db.CreateTables()
 	if err != nil {
 		t.Fatal(
@@ -350,6 +390,7 @@ func TestSelectEndpointByMessengerAndUser(
 		Name: "telegram",
 	}
 
+	// Добавить мессенджер
 	err = _db.InsertMessenger(
 		messenger,
 	)
@@ -366,6 +407,7 @@ func TestSelectEndpointByMessengerAndUser(
 		Username: "admin",
 	}
 
+	// Добавить пользователя
 	err = _db.InsertUser(
 		user,
 	)
@@ -384,6 +426,7 @@ func TestSelectEndpointByMessengerAndUser(
 		Id:        "1",
 	}
 
+	// Добавить эндпоинт
 	err = _db.InsertEndpoint(
 		endpoint,
 	)
@@ -396,6 +439,7 @@ func TestSelectEndpointByMessengerAndUser(
 		)
 	}
 
+	// Выбрать эндпоинт
 	selected, err := _db.SelectEndpointByMessengerAndUser(
 		messenger.Name,
 		user.Username,
@@ -409,6 +453,8 @@ func TestSelectEndpointByMessengerAndUser(
 		)
 	}
 
+	// Если выбранный и добавленный эндпоинт
+	// не совпадают, завершить работу с ошибкой
 	if !equal(
 		endpoint,
 		selected,
@@ -434,6 +480,7 @@ func TestSelectEndpointsByMessengers(
 
 	errMsg := "can't test select endpoint by messenger and user: "
 
+	// Пересоздать БД
 	err := setupDb()
 	if err != nil {
 		t.Fatal(
@@ -444,6 +491,7 @@ func TestSelectEndpointsByMessengers(
 		)
 	}
 
+	// Открыть БД
 	_db, closer, err := db.Open()
 	if err != nil {
 		t.Fatal(
@@ -455,6 +503,7 @@ func TestSelectEndpointsByMessengers(
 	}
 	defer closer()
 
+	// Создать таблицы
 	err = _db.CreateTables()
 	if err != nil {
 		t.Fatal(
@@ -469,6 +518,7 @@ func TestSelectEndpointsByMessengers(
 		Name: "telegram",
 	}
 
+	// Добавить мессенджер
 	err = _db.InsertMessenger(
 		messenger,
 	)
@@ -485,6 +535,7 @@ func TestSelectEndpointsByMessengers(
 		Username: "admin",
 	}
 
+	// Добавить пользователя
 	err = _db.InsertUser(
 		user,
 	)
@@ -503,6 +554,7 @@ func TestSelectEndpointsByMessengers(
 		Id:        "1",
 	}
 
+	// Добавить эндпоинт
 	err = _db.InsertEndpoint(
 		endpoint,
 	)
@@ -515,6 +567,7 @@ func TestSelectEndpointsByMessengers(
 		)
 	}
 
+	// Выбрать эндпоинты по мессенджеру
 	endpoints, err := _db.SelectEndpointsByMessenger(
 		messenger.Name,
 	)
@@ -527,6 +580,8 @@ func TestSelectEndpointsByMessengers(
 		)
 	}
 
+	// Если длина списка выбранных эндпоинтов не равна 1,
+	// завершить работу с ошибкой
 	if len(endpoints) != 1 {
 		t.Fatal(
 			errors.New(
@@ -540,8 +595,12 @@ func TestSelectEndpointsByMessengers(
 		)
 	}
 
+	// Единственный выбранный эндпоинт
 	selected := endpoints[0]
 
+	// Если выбранный и добавленный
+	// эндпоинты не равны,
+	// завершить работу с ошибкой
 	if !equal(
 		endpoint,
 		selected,
@@ -567,6 +626,7 @@ func TestUpdateEndpoint(
 
 	errMsg := "can't test select endpoint by messenger and user: "
 
+	// Пересоздать БД
 	err := setupDb()
 	if err != nil {
 		t.Fatal(
@@ -577,6 +637,7 @@ func TestUpdateEndpoint(
 		)
 	}
 
+	// Открыть БД
 	_db, closer, err := db.Open()
 	if err != nil {
 		t.Fatal(
@@ -588,6 +649,7 @@ func TestUpdateEndpoint(
 	}
 	defer closer()
 
+	// Создать таблицы
 	err = _db.CreateTables()
 	if err != nil {
 		t.Fatal(
@@ -602,6 +664,7 @@ func TestUpdateEndpoint(
 		Name: "telegram",
 	}
 
+	// Добавить мессенджер
 	err = _db.InsertMessenger(
 		messenger,
 	)
@@ -618,6 +681,7 @@ func TestUpdateEndpoint(
 		Username: "admin",
 	}
 
+	// Добавить пользователя
 	err = _db.InsertUser(
 		user,
 	)
@@ -636,6 +700,7 @@ func TestUpdateEndpoint(
 		Id:        "1",
 	}
 
+	// Добавить эндпоинт
 	err = _db.InsertEndpoint(
 		endpoint,
 	)
@@ -648,8 +713,10 @@ func TestUpdateEndpoint(
 		)
 	}
 
+	// Указать в качестве идентификатора эндпоинта новое значение
 	endpoint.Id = "2"
 
+	// Обновить эндпоинт
 	err = _db.UpdateEndpoint(
 		endpoint,
 	)
@@ -662,6 +729,7 @@ func TestUpdateEndpoint(
 		)
 	}
 
+	// Выбрать эндпоинт
 	selected, err := _db.SelectEndpointByMessengerAndUser(
 		messenger.Name,
 		user.Username,
@@ -675,6 +743,9 @@ func TestUpdateEndpoint(
 		)
 	}
 
+	// Если выбранный и добавленный
+	// эндпоинты не равны,
+	// завершить работу с ошибкой
 	if !equal(
 		endpoint,
 		selected,
@@ -700,6 +771,7 @@ func TestDeleteEndpoint(
 
 	errMsg := "can't test select endpoint by messenger and user: "
 
+	// Пересоздать БД
 	err := setupDb()
 	if err != nil {
 		t.Fatal(
@@ -710,6 +782,7 @@ func TestDeleteEndpoint(
 		)
 	}
 
+	// Открыть БД
 	_db, closer, err := db.Open()
 	if err != nil {
 		t.Fatal(
@@ -721,6 +794,7 @@ func TestDeleteEndpoint(
 	}
 	defer closer()
 
+	// Создать таблицы
 	err = _db.CreateTables()
 	if err != nil {
 		t.Fatal(
@@ -735,6 +809,7 @@ func TestDeleteEndpoint(
 		Name: "telegram",
 	}
 
+	// Добавить мессенджер
 	err = _db.InsertMessenger(
 		messenger,
 	)
@@ -751,6 +826,7 @@ func TestDeleteEndpoint(
 		Username: "admin",
 	}
 
+	// Добавить пользователя
 	err = _db.InsertUser(
 		user,
 	)
@@ -769,6 +845,7 @@ func TestDeleteEndpoint(
 		Id:        "1",
 	}
 
+	// Добавить эндпоинт
 	err = _db.InsertEndpoint(
 		endpoint,
 	)
@@ -781,6 +858,7 @@ func TestDeleteEndpoint(
 		)
 	}
 
+	// Удалить эндпоинт
 	err = _db.DeleteEndpoint(
 		messenger.Name,
 		user.Username,
@@ -794,6 +872,7 @@ func TestDeleteEndpoint(
 		)
 	}
 
+	// Выбрать все эндпоинты
 	endpoints, err := _db.SelectAllEndpoints()
 	if err != nil {
 		t.Fatal(
@@ -804,6 +883,9 @@ func TestDeleteEndpoint(
 		)
 	}
 
+	// Если длина списка
+	// выбранных эндпоинтов не равна 0,
+	// завершить работу с ошибкой
 	if len(endpoints) > 0 {
 		t.Fatal(
 			errors.New(

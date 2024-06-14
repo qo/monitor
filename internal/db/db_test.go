@@ -57,12 +57,15 @@ func setupDb() error {
 
 	errMsg := "can't setup db: "
 
+	// Получить данные о файле БД
 	_, err := os.Stat(
 		dbName,
 	)
 
+	// Если удалось получить данные о файле БД
 	if err == nil {
 
+		// Удалить файл БД
 		err = os.Remove(
 			dbName,
 		)
@@ -74,6 +77,7 @@ func setupDb() error {
 			)
 		}
 
+		// Создать файл БД
 		_, err = os.Create(
 			dbName,
 		)
@@ -85,8 +89,10 @@ func setupDb() error {
 			)
 		}
 
+		// Если файл БД не существует
 	} else if errors.Is(err, os.ErrNotExist) {
 
+		// Создать файл БД
 		_, err = os.Create(
 			dbName,
 		)
@@ -98,6 +104,8 @@ func setupDb() error {
 			)
 		}
 
+		// Если возникла другая ошибка,
+		// вернуть ошибку
 	} else {
 		return errors.New(
 			errMsg +
@@ -138,6 +146,7 @@ func TestCreateTables(
 
 	errMsg := "can't test create: "
 
+	// Пересоздать БД
 	err := setupDb()
 	if err != nil {
 		t.Fatal(
@@ -148,6 +157,7 @@ func TestCreateTables(
 		)
 	}
 
+	// Открыть БД
 	_db, _, err := db.Open()
 	if err != nil {
 		t.Fatal(
@@ -158,26 +168,7 @@ func TestCreateTables(
 		)
 	}
 
-	// err = _db.CreateTables()
-	// if err != nil {
-	// 	t.Fatal(
-	// 		errors.New(
-	// 			errMsg +
-	// 				err.Error(),
-	// 		),
-	// 	)
-	// }
-
-	// err = _db.DropTables()
-	// if err != nil {
-	// 	t.Fatal(
-	// 		errors.New(
-	// 			errMsg +
-	// 				err.Error(),
-	// 		),
-	// 	)
-	// }
-
+	// Создать таблицы
 	err = _db.CreateTables()
 	if err != nil {
 		t.Fatal(
@@ -188,6 +179,7 @@ func TestCreateTables(
 		)
 	}
 
+	// Выбрать таблицы
 	rows, err := _db.Query(
 		selectTablesQuery,
 	)
@@ -203,10 +195,12 @@ func TestCreateTables(
 
 	var tables []string
 
+	// Для каждой строки результата
 	for rows.Next() {
 
 		var table string
 
+		// Прочитать имя таблицы
 		err = rows.Scan(
 			&table,
 		)
@@ -221,12 +215,14 @@ func TestCreateTables(
 			)
 		}
 
+		// Добавить имя таблицы в список таблиц
 		tables = append(
 			tables,
 			table,
 		)
 	}
 
+	// Ожидаемый список таблиц
 	want := []string{
 		"service",
 		"metric",
@@ -240,7 +236,12 @@ func TestCreateTables(
 		"notifier",
 	}
 
-	if !sameStringSlice(tables, want) {
+	// Если список таблиц отличается от ожидаемого,
+	// завершить работу с ошибкой
+	if !sameStringSlice(
+		tables,
+		want,
+	) {
 		t.Fatal(
 			errors.New(
 				errMsg +
@@ -267,6 +268,7 @@ func TestDropTables(
 
 	errMsg := "can't test drop: "
 
+	// Пересоздать БД
 	err := setupDb()
 	if err != nil {
 		t.Fatal(
@@ -277,6 +279,7 @@ func TestDropTables(
 		)
 	}
 
+	// Открыть БД
 	_db, _, err := db.Open()
 	if err != nil {
 		t.Fatal(
@@ -288,6 +291,7 @@ func TestDropTables(
 		)
 	}
 
+	// Создать таблицы
 	err = _db.CreateTables()
 	if err != nil {
 		t.Fatal(
@@ -299,6 +303,7 @@ func TestDropTables(
 		)
 	}
 
+	// Удалить таблицы
 	err = _db.DropTables()
 	if err != nil {
 		t.Fatal(
@@ -310,6 +315,7 @@ func TestDropTables(
 		)
 	}
 
+	// Выбрать имена всех таблиц
 	rows, err := _db.Query(
 		selectTablesQuery,
 	)
@@ -325,10 +331,12 @@ func TestDropTables(
 
 	var tables []string
 
+	// Для каждой строки результата
 	for rows.Next() {
 
 		var table string
 
+		// Прочитать имя таблицы
 		err = rows.Scan(
 			&table,
 		)
@@ -343,12 +351,15 @@ func TestDropTables(
 			)
 		}
 
+		// Добавить имя таблицы в список таблиц
 		tables = append(
 			tables,
 			table,
 		)
 	}
 
+	// Если в списке таблиц есть имена,
+	// завершить работу с ошибкой
 	if len(tables) > 0 {
 		t.Fatal(
 			errors.New(

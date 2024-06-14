@@ -96,7 +96,7 @@ func init() {
 		},
 	}
 
-	// Добавить кнопки в разметки
+	// Добавить кнопки в разметку
 	takeMarkup.Inline(
 		takeMarkup.Row(btnTake),
 	)
@@ -167,14 +167,15 @@ Value: %s`,
 		&value,
 	)
 	if err != nil {
-		return "",
-			"",
-			"",
+		return service,
+			metric,
+			value,
 			errors.New(
 				errMsg +
 					err.Error(),
 			)
 	}
+
 	return service,
 		metric,
 		value,
@@ -192,6 +193,7 @@ func (n notifier) Notify(
 		endpoint,
 	}
 
+	// Составить сообщение
 	msg := composeMsg(
 		value,
 	)
@@ -225,9 +227,13 @@ func handleAssignTask(
 
 	errMsg := "can't handle assign task: "
 
+	// Получить ID пользователя, который нажал на кнопку
 	id := c.Sender().ID
+
+	// Преобразовать ID в строку
 	idStr := strconv.Itoa(int(id))
 
+	// Получить эндпоинт по указанному ID
 	endpoint, err := _db.SelectEndpointByMessengerAndId(
 		"telegram",
 		idStr,
@@ -239,8 +245,10 @@ func handleAssignTask(
 		)
 	}
 
+	// Получить текстовое содержание сообщения
 	msg := c.Message().Text
 
+	// Разобрать сообщение в сервис и метрику
 	service, metric, _, err := parseMsg(msg)
 	if err != nil {
 		return errors.New(
@@ -249,6 +257,7 @@ func handleAssignTask(
 		)
 	}
 
+	// Получить задачу для данных сервиса и метрики
 	task, err := _db.SelectTaskByServiceAndMetric(
 		service,
 		metric,
@@ -260,8 +269,11 @@ func handleAssignTask(
 		)
 	}
 
+	// Указать в качестве работника над задачей
+	// имя пользователя, нажавшего на кнопку
 	task.Worker = endpoint.User
 
+	// Обновить задачу
 	err = _db.UpdateTask(task)
 	if err != nil {
 		return errors.New(
@@ -270,6 +282,9 @@ func handleAssignTask(
 		)
 	}
 
+	// Отредактировать сообщение, добавив
+	// имя работника и поменяв разметку
+	// на кнопку "Complete"
 	_, err = b.Edit(
 		c.Message(),
 		fmt.Sprintf(
@@ -287,6 +302,7 @@ Worker: %s`,
 				err.Error(),
 		)
 	}
+
 	return nil
 }
 
@@ -299,22 +315,10 @@ func handleCompleteTask(
 
 	errMsg := "can't handle complete task: "
 
-	id := c.Sender().ID
-	idStr := strconv.Itoa(int(id))
-
-	endpoint, err := _db.SelectEndpointByMessengerAndId(
-		"telegram",
-		idStr,
-	)
-	if err != nil {
-		return errors.New(
-			errMsg +
-				err.Error(),
-		)
-	}
-
+	// Получить текстовое содержимое сообщения
 	msg := c.Message().Text
 
+	// Разобрать сообщение на сервис и метрику
 	service, metric, _, err := parseMsg(msg)
 	if err != nil {
 		return errors.New(
@@ -323,7 +327,9 @@ func handleCompleteTask(
 		)
 	}
 
-	task, err := _db.SelectTaskByServiceAndMetric(
+	// Удалить задачу, связанную с данными
+	// сервисом и метрикой
+	err = _db.DeleteTask(
 		service,
 		metric,
 	)
@@ -334,16 +340,7 @@ func handleCompleteTask(
 		)
 	}
 
-	task.Worker = endpoint.User
-
-	err = _db.UpdateTask(task)
-	if err != nil {
-		return errors.New(
-			errMsg +
-				err.Error(),
-		)
-	}
-
+	// Удалить сообщение
 	err = b.Delete(
 		c.Message(),
 	)
@@ -373,9 +370,10 @@ func (n notifier) Run() {
 	go b.Start()
 }
 
-// Эксортировать переменную типа notifier.
+// Экспортировать переменную типа notifier.
 // Это можно назвать паттерном синглтон,
 // так как тип notifier не экспортирован,
 // и как следствие переменные данного
-// типа не могут быть созданы напрямую.
+// типа не могут быть созданы напрямую
+// вне данного пакета.
 var Notifier notifier

@@ -15,6 +15,7 @@ type config struct {
 	Response string `json:"response"`
 }
 
+// Загрузить конфигурацию
 func Load() (config, error) {
 
 	var c config

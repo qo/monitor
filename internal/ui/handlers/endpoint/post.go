@@ -11,12 +11,14 @@ import (
 // создания эндпоинта
 func handlePost() error {
 
+	// Шаблон формы с эндпоинтом
 	endpointTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/endpoint/endpoint.html",
 		),
 	)
 
+	// Шаблон ошибки 500
 	internalErrorTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/error/error.html",
@@ -30,17 +32,22 @@ func handlePost() error {
 
 			var endpoint db.Endpoint
 
+			// Получить параметры из формы
 			messenger := r.FormValue("messenger")
-			endpoint.Messenger = messenger
-
 			id := r.FormValue("id")
-			endpoint.Id = id
-
 			desc := r.FormValue("description")
+
+			// Заполнить эндпоинт
+			endpoint.Messenger = messenger
+			endpoint.Id = id
 			endpoint.Desc = desc
 
-			err := insert(endpoint)
+			// Добавить эндпоинт
+			err := insert(
+				endpoint,
+			)
 			if err != nil {
+				// Заполнить шаблон ошибки 500
 				internalErrorTmpl.ExecuteTemplate(
 					w,
 					"error",
@@ -49,6 +56,7 @@ func handlePost() error {
 				return
 			}
 
+			// Заполнить шаблон формы с эндпоинтом
 			endpointTmpl.ExecuteTemplate(
 				w,
 				"endpoint",

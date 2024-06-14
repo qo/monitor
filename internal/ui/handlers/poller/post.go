@@ -11,12 +11,15 @@ import (
 // создания опрашивающего плагина
 func handlePost() error {
 
+	// Получить шаблон
+	// для формы с опрашивающим плагином
 	pollerTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/poller/poller.html",
 		),
 	)
 
+	// Получить шаблон для ошибки 500
 	internalErrorTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/error/error.html",
@@ -30,16 +33,20 @@ func handlePost() error {
 
 			var poller db.Poller
 
+			// Получить параметры формы
 			service := r.FormValue("service")
-			poller.Service = service
-
 			metric := r.FormValue("metric")
+
+			// Заполнить данные об опрашивающем плагине
+			poller.Service = service
 			poller.Metric = metric
 
+			// Добавить опрашивающий плагин
 			err := insert(
 				poller,
 			)
 			if err != nil {
+				// Заполнить шаблон для ошибки 500
 				internalErrorTmpl.ExecuteTemplate(
 					w,
 					"error",
@@ -48,6 +55,8 @@ func handlePost() error {
 				return
 			}
 
+			// Заполнить шаблон
+			// для формы с опрашивающим плагином
 			pollerTmpl.ExecuteTemplate(
 				w,
 				"poller",

@@ -25,7 +25,7 @@ func endpoints() (
 
 func endpoint(
 	messenger string,
-	id string,
+	user string,
 ) (
 	db.Endpoint,
 	error,
@@ -37,7 +37,7 @@ func endpoint(
 
 	return _db.SelectEndpointByMessengerAndUser(
 		messenger,
-		id,
+		user,
 	)
 }
 

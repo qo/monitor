@@ -9,6 +9,7 @@ import (
 // получения страницы эндпоинтов
 func handleGetEndpoints() error {
 
+	// Шаблон формы страницы эндпоинтов
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/page.html",
@@ -21,11 +22,15 @@ func handleGetEndpoints() error {
 	http.HandleFunc(
 		"GET /endpoints",
 		func(w http.ResponseWriter, r *http.Request) {
+
+			// Получить все эндпоинты
 			data, err := endpoints()
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
+
+			// Заполнить страницу эндпоинтов
 			tmpl.Execute(
 				w,
 				data,

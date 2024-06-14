@@ -11,12 +11,15 @@ import (
 // создания пользователя
 func handlePost() error {
 
+	// Получить шаблон
+	// для формы с пользователем
 	userTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/user/user.html",
 		),
 	)
 
+	// Получить шаблон для ошибки 500
 	internalErrorTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/error/error.html",
@@ -30,11 +33,18 @@ func handlePost() error {
 
 			var user db.User
 
+			// Получить параметры формы
 			username := r.FormValue("username")
+
+			// Заполнить данные о пользователе
 			user.Username = username
 
-			err := insert(user)
+			// Добавить пользователя
+			err := insert(
+				user,
+			)
 			if err != nil {
+				// Заполнить шаблон ошибки 500
 				internalErrorTmpl.ExecuteTemplate(
 					w,
 					"error",
@@ -43,6 +53,8 @@ func handlePost() error {
 				return
 			}
 
+			// Заполнить шаблон
+			// для формы с пользователем
 			userTmpl.ExecuteTemplate(
 				w,
 				"user",

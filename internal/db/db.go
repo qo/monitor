@@ -18,6 +18,7 @@ func Open() (*DB, func(), error) {
 
 	errMsg := "can't open db: "
 
+	// Загрузить конфигурацию
 	config, err := config.Load()
 	if err != nil {
 		return nil,
@@ -28,11 +29,13 @@ func Open() (*DB, func(), error) {
 			)
 	}
 
+	// Строка для открытия БД
 	dataSourceName := fmt.Sprintf(
 		"file:%s?_foreign_keys=on",
 		config.DatabasePath,
 	)
 
+	// Открыть БД
 	_db, err := sql.Open(
 		"sqlite3",
 		dataSourceName,
@@ -63,6 +66,7 @@ func (db *DB) DropTables() error {
 
 	var err error
 
+	// Удалить таблицу триггеров
 	err = db.DropTriggers()
 	if err != nil {
 		return errors.New(
@@ -71,6 +75,7 @@ func (db *DB) DropTables() error {
 		)
 	}
 
+	// Удалить таблицу подписывающих плагинов
 	err = db.DropPollers()
 	if err != nil {
 		return errors.New(
@@ -79,6 +84,7 @@ func (db *DB) DropTables() error {
 		)
 	}
 
+	// Удалить таблицу задач
 	err = db.DropTasks()
 	if err != nil {
 		return errors.New(
@@ -87,6 +93,7 @@ func (db *DB) DropTables() error {
 		)
 	}
 
+	// Удалить таблицу значений
 	err = db.DropValues()
 	if err != nil {
 		return errors.New(
@@ -95,6 +102,7 @@ func (db *DB) DropTables() error {
 		)
 	}
 
+	// Удалить таблицу метрик
 	err = db.DropMetrics()
 	if err != nil {
 		return errors.New(
@@ -103,6 +111,7 @@ func (db *DB) DropTables() error {
 		)
 	}
 
+	// Удалить таблицу сервисов
 	err = db.DropServices()
 	if err != nil {
 		return errors.New(
@@ -111,6 +120,7 @@ func (db *DB) DropTables() error {
 		)
 	}
 
+	// Удалить таблицу публикующих плагинов
 	err = db.DropNotifiers()
 	if err != nil {
 		return errors.New(
@@ -119,6 +129,7 @@ func (db *DB) DropTables() error {
 		)
 	}
 
+	// Удалить таблицу эндпоинтов
 	err = db.DropEndpoints()
 	if err != nil {
 		return errors.New(
@@ -127,6 +138,7 @@ func (db *DB) DropTables() error {
 		)
 	}
 
+	// Удалить таблицу мессенджеров
 	err = db.DropMessengers()
 	if err != nil {
 		return errors.New(
@@ -135,6 +147,7 @@ func (db *DB) DropTables() error {
 		)
 	}
 
+	// Удалить таблицу пользователей
 	err = db.DropUsers()
 	if err != nil {
 		return errors.New(
@@ -153,6 +166,7 @@ func (db *DB) CreateTables() error {
 
 	var err error
 
+	// Создать таблицу сервисов
 	err = db.CreateServices()
 	if err != nil {
 		return errors.New(
@@ -161,6 +175,7 @@ func (db *DB) CreateTables() error {
 		)
 	}
 
+	// Создать таблицу метрик
 	err = db.CreateMetrics()
 	if err != nil {
 		return errors.New(
@@ -169,6 +184,7 @@ func (db *DB) CreateTables() error {
 		)
 	}
 
+	// Создать таблицу значений
 	err = db.CreateValues()
 	if err != nil {
 		return errors.New(
@@ -177,6 +193,7 @@ func (db *DB) CreateTables() error {
 		)
 	}
 
+	// Создать таблицу подписывающих плагинов
 	err = db.CreatePollers()
 	if err != nil {
 		return errors.New(
@@ -185,6 +202,7 @@ func (db *DB) CreateTables() error {
 		)
 	}
 
+	// Создать таблицу мессенджеров
 	err = db.CreateMessengers()
 	if err != nil {
 		return errors.New(
@@ -193,6 +211,7 @@ func (db *DB) CreateTables() error {
 		)
 	}
 
+	// Создать таблицу эндпоинтов
 	err = db.CreateEndpoints()
 	if err != nil {
 		return errors.New(
@@ -201,6 +220,7 @@ func (db *DB) CreateTables() error {
 		)
 	}
 
+	// Создать таблицу публикующих плагинов
 	err = db.CreateNotifiers()
 	if err != nil {
 		return errors.New(
@@ -209,6 +229,7 @@ func (db *DB) CreateTables() error {
 		)
 	}
 
+	// Создать таблицу триггеров
 	err = db.CreateTriggers()
 	if err != nil {
 		return errors.New(
@@ -217,6 +238,7 @@ func (db *DB) CreateTables() error {
 		)
 	}
 
+	// Создать таблицу пользователей
 	err = db.CreateUsers()
 	if err != nil {
 		return errors.New(
@@ -225,6 +247,7 @@ func (db *DB) CreateTables() error {
 		)
 	}
 
+	// Создать таблицу задач
 	err = db.CreateTasks()
 	if err != nil {
 		return errors.New(

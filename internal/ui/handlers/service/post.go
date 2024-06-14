@@ -11,12 +11,15 @@ import (
 // создания сервиса
 func handlePost() error {
 
+	// Получить шаблон
+	// для формы с сервисом
 	serviceTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/service/service.html",
 		),
 	)
 
+	// Получить шаблон ошибки 500
 	internalErrorTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/error/error.html",
@@ -30,14 +33,20 @@ func handlePost() error {
 
 			var service db.Service
 
+			// Получить значения query-параметров
 			name := r.FormValue("name")
-			service.Name = name
-
 			desc := r.FormValue("description")
+
+			// Заполнить данные сервиса
+			service.Name = name
 			service.Desc = desc
 
-			err := insert(service)
+			// Добавить сервис
+			err := insert(
+				service,
+			)
 			if err != nil {
+				// Заполнить шаблон ошибки 500
 				internalErrorTmpl.ExecuteTemplate(
 					w,
 					"error",
@@ -46,6 +55,8 @@ func handlePost() error {
 				return
 			}
 
+			// Заполнить шаблон
+			// для формы с сервисом
 			serviceTmpl.ExecuteTemplate(
 				w,
 				"service",

@@ -8,7 +8,9 @@ import (
 	"github.com/qo/monitor/examples/services/httpd/config"
 )
 
-// Создать веб-обработчик
+// Создать веб-обработчик,
+// отвечающий указанной строкой
+// на запросы
 func CreateHandler(
 	response string,
 ) func(
@@ -35,6 +37,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Создать обработчик, отвечающий
+	// сообщением из конфигурации
 	handler := CreateHandler(
 		cfg.Response,
 	)

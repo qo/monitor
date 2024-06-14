@@ -11,6 +11,8 @@ import (
 // редактирования задачи
 func handlePut() error {
 
+	// Получить шаблон
+	// для формы с задачей
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/task/task.html",
@@ -23,24 +25,27 @@ func handlePut() error {
 
 			var task db.Task
 
+			// Получения параметры формы
 			service := r.FormValue("service")
-			task.Service = service
-
 			metric := r.FormValue("metric")
-			task.Metric = metric
-
 			value := r.FormValue("value")
-			task.Value = value
-
 			worker := r.FormValue("worker")
+
+			// Заполнить данные о задаче
+			task.Service = service
+			task.Metric = metric
+			task.Value = value
 			task.Worker = worker
 
+			// Обновить задачу
 			err := update(task)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
 
+			// Заполнить шаблон
+			// для формы с задачей
 			tmpl.ExecuteTemplate(
 				w,
 				"task",

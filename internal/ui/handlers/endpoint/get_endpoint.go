@@ -9,6 +9,7 @@ import (
 // получения формы с эндпоинтом
 func handleGetEndpoint() error {
 
+	// Шаблон формы с эндпоинтом
 	tmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/endpoint/endpoint.html",
@@ -16,18 +17,24 @@ func handleGetEndpoint() error {
 	)
 
 	http.HandleFunc(
-		"GET /endpoint/{messenger}/{id}",
+		"GET /endpoint/{messenger}/{user}",
 		func(w http.ResponseWriter, r *http.Request) {
+
+			// Получить значения query-параметров
 			messenger := r.PathValue("messenger")
-			id := r.PathValue("id")
+			user := r.PathValue("user")
+
+			// Получить эндпоинт
 			data, err := endpoint(
 				messenger,
-				id,
+				user,
 			)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
+
+			// Заполнить шаблон формы с эндпоинтом
 			err = tmpl.ExecuteTemplate(
 				w,
 				"endpoint",

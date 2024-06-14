@@ -9,6 +9,7 @@ import (
 // удаления мессенджера
 func handleDelete() error {
 
+	// Шаблон для ошибки 500
 	internalErrorTmpl := template.Must(
 		template.ParseFiles(
 			"./internal/ui/templates/error/error.html",
@@ -20,10 +21,15 @@ func handleDelete() error {
 		"DELETE /messengers/remove/{name}",
 		func(w http.ResponseWriter, r *http.Request) {
 
+			// Получить значения query-параметров
 			name := r.PathValue("name")
 
-			err := remove(name)
+			// Удалить мессенджер
+			err := remove(
+				name,
+			)
 			if err != nil {
+				// Заполнить шаблон ошибки 500
 				internalErrorTmpl.ExecuteTemplate(
 					w,
 					"error",
