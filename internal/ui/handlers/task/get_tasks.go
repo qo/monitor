@@ -1,6 +1,7 @@
 package task
 
 import (
+	"log"
 	"net/http"
 	"text/template"
 )
@@ -26,6 +27,7 @@ func handleGetTasks() error {
 			// Получить все задачи
 			data, err := tasks()
 			if err != nil {
+				log.Println(err)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}

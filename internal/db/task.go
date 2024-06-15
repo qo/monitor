@@ -214,11 +214,16 @@ func (db *DB) SelectAllTasks() (
 
 		var task Task
 
+		// Переменная-пустышка,
+		// необходимая для сканирования
+		// ненужных полей
+		var dummy any
+
 		err = rows.Scan(
 			&task.Service,
 			&task.Metric,
 			&task.Value,
-			&task.Worker,
+			&dummy,
 		)
 
 		if err != nil {
@@ -228,6 +233,16 @@ func (db *DB) SelectAllTasks() (
 					err.Error(),
 			)
 		}
+
+		// Отдельно просканировать атрибут Worker,
+		// не проверяя ошибку,
+		// так как он может быть равен NULL
+		rows.Scan(
+			&dummy,
+			&dummy,
+			&dummy,
+			&task.Worker,
+		)
 
 		tasks = append(
 			tasks,
@@ -269,11 +284,16 @@ func (db *DB) SelectTaskByServiceAndMetric(
 
 	var task Task
 
+	// Переменная-пустышка,
+	// необходимая для сканирования
+	// ненужных полей
+	var dummy any
+
 	err := row.Scan(
 		&task.Service,
 		&task.Metric,
 		&task.Value,
-		&task.Worker,
+		&dummy,
 	)
 
 	if err != nil {
@@ -282,6 +302,16 @@ func (db *DB) SelectTaskByServiceAndMetric(
 				err.Error(),
 		)
 	}
+
+	// Отдельно просканировать атрибут Worker,
+	// не проверяя ошибку,
+	// так как он может быть равен NULL
+	row.Scan(
+		&dummy,
+		&dummy,
+		&dummy,
+		&task.Worker,
+	)
 
 	return task,
 		nil
