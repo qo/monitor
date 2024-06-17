@@ -3,7 +3,6 @@ package core
 import (
 	"errors"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/qo/monitor/internal/config"
@@ -53,33 +52,25 @@ func (n Notifier) SetNotifyFunc(
 }
 
 // Функция, запускающая ядро
-func Run() {
+func Run() error {
 
 	_db, close, err := db.Open()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer close()
 
-	// Добавить тестовые данные
-	err = InsertExampleData(_db)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	cfg, err := config.Load()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// Посчитать опрашивающие плагины в БД
 	dbPollersCount, err := _db.CountAllPollers()
 	if err != nil {
-		log.Fatal(
-			errors.New(
-				"can't count all pollers: " +
-					err.Error(),
-			),
+		return errors.New(
+			"can't count all pollers: " +
+				err.Error(),
 		)
 	}
 
@@ -87,13 +78,11 @@ func Run() {
 	// не совпадает с количеством плагинов в коде,
 	// завершить работу и логгировать ошибку
 	if len(pollerPlugins) != dbPollersCount {
-		log.Fatal(
-			errors.New(
-				fmt.Sprintf(
-					"there are %d pollers in your db, but %d pollers in your source code",
-					dbPollersCount,
-					len(pollerPlugins),
-				),
+		return errors.New(
+			fmt.Sprintf(
+				"there are %d pollers in your db, but %d pollers in your source code",
+				dbPollersCount,
+				len(pollerPlugins),
 			),
 		)
 	}
@@ -101,23 +90,19 @@ func Run() {
 	// Аналогично опрашивающим плагинам
 	dbNotifiersCount, err := _db.CountAllNotifiers()
 	if err != nil {
-		log.Fatal(
-			errors.New(
-				"can't count all notifiers: " +
-					err.Error(),
-			),
+		return errors.New(
+			"can't count all notifiers: " +
+				err.Error(),
 		)
 	}
 
 	// Аналогично опрашивающим плагинам
 	if len(notifierPlugins) != dbNotifiersCount {
-		log.Fatal(
-			errors.New(
-				fmt.Sprintf(
-					"there are %d notifiers in your db, but %d notifiers in your source code",
-					dbNotifiersCount,
-					len(notifierPlugins),
-				),
+		return errors.New(
+			fmt.Sprintf(
+				"there are %d notifiers in your db, but %d notifiers in your source code",
+				dbNotifiersCount,
+				len(notifierPlugins),
 			),
 		)
 	}
@@ -139,11 +124,9 @@ func Run() {
 			pollerPlugin.Metric(),
 		)
 		if err != nil {
-			log.Fatal(
-				errors.New(
-					"can't select poller by service and metric: " +
-						err.Error(),
-				),
+			return errors.New(
+				"can't select poller by service and metric: " +
+					err.Error(),
 			)
 		}
 
@@ -173,11 +156,9 @@ func Run() {
 			notifierPlugin.Messenger(),
 		)
 		if err != nil {
-			log.Fatal(
-				errors.New(
-					"can't select notifier by messenger: " +
-						err.Error(),
-				),
+			return errors.New(
+				"can't select notifier by messenger: " +
+					err.Error(),
 			)
 		}
 
@@ -210,11 +191,9 @@ func Run() {
 		// Выбрать все триггеры
 		triggers, err := _db.SelectAllTriggers()
 		if err != nil {
-			log.Fatal(
-				errors.New(
-					"can't select all triggers: " +
-						err.Error(),
-				),
+			return errors.New(
+				"can't select all triggers: " +
+					err.Error(),
 			)
 		}
 
@@ -239,11 +218,9 @@ func Run() {
 								trigger.Value,
 							)
 							if err != nil {
-								log.Fatal(
-									errors.New(
-										"can't select value: " +
-											err.Error(),
-									),
+								return errors.New(
+									"can't select value: " +
+										err.Error(),
 								)
 							}
 
@@ -253,11 +230,9 @@ func Run() {
 								trigger.User,
 							)
 							if err != nil {
-								log.Fatal(
-									errors.New(
-										"can't select value: " +
-											err.Error(),
-									),
+								return errors.New(
+									"can't select value: " +
+										err.Error(),
 								)
 							}
 
@@ -287,11 +262,9 @@ func Run() {
 			// Получить значение
 			valueStr, err := poller.ValueFunc()
 			if err != nil {
-				log.Fatal(
-					errors.New(
-						"error while getting value: " +
-							err.Error(),
-					),
+				return errors.New(
+					"error while getting value: " +
+						err.Error(),
 				)
 			}
 
@@ -302,11 +275,9 @@ func Run() {
 				valueStr,
 			)
 			if err != nil {
-				log.Fatal(
-					errors.New(
-						"can't select value: " +
-							err.Error(),
-					),
+				return errors.New(
+					"can't select value: " +
+						err.Error(),
 				)
 			}
 
@@ -317,9 +288,7 @@ func Run() {
 				value.Metric,
 			)
 			if err != nil {
-				log.Fatal(
-					err,
-				)
+				return err
 			}
 
 			// Если задача существует,
@@ -339,11 +308,9 @@ func Run() {
 					},
 				)
 				if err != nil {
-					log.Fatal(
-						errors.New(
-							"can't insert task: " +
-								err.Error(),
-						),
+					return errors.New(
+						"can't insert task: " +
+							err.Error(),
 					)
 				}
 			}
@@ -359,11 +326,9 @@ func Run() {
 					// Выполнить функцию
 					err = fun()
 					if err != nil {
-						log.Fatal(
-							errors.New(
-								"can't call trigger func: " +
-									err.Error(),
-							),
+						return errors.New(
+							"can't call trigger func: " +
+								err.Error(),
 						)
 					}
 				}

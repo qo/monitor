@@ -25,7 +25,7 @@ func endpoints() (
 
 func endpoint(
 	messenger string,
-	user string,
+	id string,
 ) (
 	db.Endpoint,
 	error,
@@ -35,9 +35,9 @@ func endpoint(
 		return db.Endpoint{}, err
 	}
 
-	return _db.SelectEndpointByMessengerAndUser(
+	return _db.SelectEndpointByMessengerAndId(
 		messenger,
-		user,
+		id,
 	)
 }
 
@@ -69,7 +69,7 @@ func insert(
 
 func remove(
 	messenger string,
-	name string,
+	id string,
 ) error {
 
 	if err != nil {
@@ -78,7 +78,7 @@ func remove(
 
 	return _db.DeleteEndpoint(
 		messenger,
-		name,
+		id,
 	)
 }
 

@@ -86,7 +86,7 @@
       </div>
       <select
         hx-get="/endpoints-by-messenger"
-        hx-target="next #endpoint"
+        hx-target="next #user"
         hx-swap="outerHTML"
         hx-trigger="load, change"
         class="select select-bordered"
@@ -110,13 +110,13 @@
         <span
           class="label-text"
         >
-          Endpoint
+          User
         </span>
       </div>
       <select
-        id="endpoint"
+        id="user"
         class="select select-bordered"
-        name="endpoint"
+        name="user"
       >
       </select>
     </label>

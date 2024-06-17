@@ -25,17 +25,17 @@ func handleGetEdit() error {
 	)
 
 	http.HandleFunc(
-		"GET /endpoints/edit/{messenger}/{name}",
+		"GET /endpoints/edit/{messenger}/{id}",
 		func(w http.ResponseWriter, r *http.Request) {
 
 			// Получить значения query-параметров
 			messenger := r.PathValue("messenger")
-			name := r.PathValue("name")
+			id := r.PathValue("id")
 
 			// Получить эндпоинт
 			data, err := endpoint(
 				messenger,
-				name,
+				id,
 			)
 			if err != nil {
 				// Заполнить шаблон ошибки 404

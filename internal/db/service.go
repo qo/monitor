@@ -1,6 +1,8 @@
 package db
 
-import "errors"
+import (
+	"errors"
+)
 
 type Service struct {
 	Name string
@@ -173,11 +175,16 @@ func (db *DB) SelectServiceByName(
 		&service.Desc,
 	)
 
+	if err != nil {
+		return service,
+			errors.New(
+				errMsg +
+					err.Error(),
+			)
+	}
+
 	return service,
-		errors.New(
-			errMsg +
-				err.Error(),
-		)
+		nil
 }
 
 // Обновить сервис в таблице сервисов

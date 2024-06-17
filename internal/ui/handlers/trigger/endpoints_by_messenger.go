@@ -1,6 +1,7 @@
 package trigger
 
 import (
+	"log"
 	"net/http"
 	"text/template"
 )
@@ -14,7 +15,7 @@ func handleGetEndpointsByMessenger() error {
 	// для формы с эндпоинтами
 	endpointTmpl := template.Must(
 		template.ParseFiles(
-			"./internal/ui/templates/trigger/endpoint.html",
+			"./internal/ui/templates/trigger/user.html",
 		),
 	)
 
@@ -49,11 +50,14 @@ func handleGetEndpointsByMessenger() error {
 
 			// Заполнить шаблон
 			// формы с эндпоинтами
-			endpointTmpl.ExecuteTemplate(
+			err = endpointTmpl.ExecuteTemplate(
 				w,
-				"endpoint",
+				"user",
 				data,
 			)
+			if err != nil {
+				log.Fatal(err)
+			}
 		},
 	)
 

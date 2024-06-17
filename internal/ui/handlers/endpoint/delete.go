@@ -18,17 +18,17 @@ func handleDelete() error {
 	)
 
 	http.HandleFunc(
-		"DELETE /endpoints/remove/{messenger}/{name}",
+		"DELETE /endpoints/remove/{messenger}/{id}",
 		func(w http.ResponseWriter, r *http.Request) {
 
 			// Получить значения query-параметров
 			messenger := r.PathValue("messenger")
-			name := r.PathValue("name")
+			id := r.PathValue("id")
 
 			// Удалить эндпоинт
 			err := remove(
 				messenger,
-				name,
+				id,
 			)
 			if err != nil {
 				// Заполнить шаблон с ошибкой

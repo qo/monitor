@@ -48,7 +48,7 @@ func handleGetEdit() error {
 
 			// Заполнить шаблон формы
 			// для редактирования сервиса
-			editTmpl.ExecuteTemplate(
+			err = editTmpl.ExecuteTemplate(
 				w,
 				"edit",
 				data,

@@ -36,11 +36,13 @@ func handlePost() error {
 			messenger := r.FormValue("messenger")
 			id := r.FormValue("id")
 			desc := r.FormValue("description")
+			user := r.FormValue("user")
 
 			// Заполнить эндпоинт
 			endpoint.Messenger = messenger
 			endpoint.Id = id
 			endpoint.Desc = desc
+			endpoint.User = user
 
 			// Добавить эндпоинт
 			err := insert(

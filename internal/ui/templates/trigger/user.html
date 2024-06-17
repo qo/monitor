@@ -1,14 +1,14 @@
-{{ define "endpoint" }}
+{{ define "user" }}
   <select
-    id="endpoint"
+    id="user"
     class="select select-bordered"
-    name="endpoint"
+    name="user"
   >
     {{ range . }}
       <option
-        value="{{ .Name }}"
+        value="{{ .User }}"
       >
-        {{ .Name }}
+        {{ .User }}
       </option>
     {{ end }}
   </select>

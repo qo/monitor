@@ -38,7 +38,7 @@ func handlePost() error {
 			metric := r.FormValue("metric")
 			value := r.FormValue("value")
 			messenger := r.FormValue("messenger")
-			user := r.FormValue("endpoint")
+			user := r.FormValue("user")
 
 			// Заполнить данные триггера
 			trigger.Service = service

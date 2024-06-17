@@ -19,7 +19,7 @@ func handlePut() error {
 	)
 
 	http.HandleFunc(
-		"PUT /endpoint/{messenger}/{name}",
+		"PUT /endpoint/{messenger}/{id}",
 		func(w http.ResponseWriter, r *http.Request) {
 
 			var endpoint db.Endpoint
@@ -28,11 +28,13 @@ func handlePut() error {
 			messenger := r.FormValue("messenger")
 			id := r.FormValue("id")
 			desc := r.FormValue("description")
+			user := r.FormValue("user")
 
 			// Заполнить эндпоинт данными
 			endpoint.Messenger = messenger
 			endpoint.Id = id
 			endpoint.Desc = desc
+			endpoint.User = user
 
 			// Обновить эндпоинт
 			err := update(
