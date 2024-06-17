@@ -12,6 +12,8 @@ import (
 	tele "gopkg.in/telebot.v3"
 )
 
+const messengerName = "telegram"
+
 // Данный плагин предназначен для того, чтобы
 // через мессенджер Telegram
 // уведомлять пользователей о статусах сервисов,
@@ -33,7 +35,7 @@ type notifier struct{}
 // к мессенджеру из БД без хранения кода
 // плагина непосредственно в БД.
 func (n notifier) Messenger() string {
-	return "telegram"
+	return messengerName
 }
 
 // Вспомогательный тип, который
@@ -235,7 +237,7 @@ func handleAssignTask(
 
 	// Получить эндпоинт по указанному ID
 	endpoint, err := _db.SelectEndpointByMessengerAndId(
-		"telegram",
+		messengerName,
 		idStr,
 	)
 	if err != nil {
@@ -248,8 +250,8 @@ func handleAssignTask(
 	// Получить текстовое содержание сообщения
 	msg := c.Message().Text
 
-	// Разобрать сообщение в сервис и метрику
-	service, metric, _, err := parseMsg(msg)
+	// Разобрать сообщение
+	service, metric, value, err := parseMsg(msg)
 	if err != nil {
 		return errors.New(
 			errMsg +
@@ -282,25 +284,72 @@ func handleAssignTask(
 		)
 	}
 
-	// Отредактировать сообщение, добавив
-	// имя работника и поменяв разметку
-	// на кнопку "Complete"
-	_, err = b.Edit(
-		c.Message(),
-		fmt.Sprintf(
-			`%s
-Worker: %s`,
-			c.Message().Text,
-			task.Worker,
-		),
-		completeMarkup,
+	// Триггеры, относящиеся к данному значению
+	relatedTriggers, err := _db.SelectTriggersByServiceMetricAndValue(
+		service,
+		metric,
+		value,
 	)
 	if err != nil {
 		return errors.New(
 			errMsg +
-				"can't edit message: " +
 				err.Error(),
 		)
+	}
+
+	// Пользователи, заинтересованные
+	// в оповещении о данном значении
+	var interestedUsers []string
+	for _, trigger := range relatedTriggers {
+		interestedUsers = append(
+			interestedUsers,
+			trigger.User,
+		)
+	}
+
+	// Эндпоинты пользователей,
+	// заинтересованных в данном значении
+	var relatedEndpoints []db.Endpoint
+	for _, user := range interestedUsers {
+
+		endpoint, err := _db.SelectEndpointByMessengerAndUser(
+			messengerName,
+			user,
+		)
+		if err != nil {
+			return errors.New(
+				errMsg +
+					err.Error(),
+			)
+		}
+
+		relatedEndpoints = append(
+			relatedEndpoints,
+			endpoint,
+		)
+	}
+
+	for _, endpoint := range relatedEndpoints {
+
+		_, err = b.Send(
+			recipient{
+				endpoint,
+			},
+			fmt.Sprintf(
+				`%s
+Worker: %s`,
+				c.Message().Text,
+				task.Worker,
+			),
+			completeMarkup,
+		)
+		if err != nil {
+			return errors.New(
+				errMsg +
+					"can't send message after take: " +
+					err.Error(),
+			)
+		}
 	}
 
 	return nil
@@ -319,7 +368,7 @@ func handleCompleteTask(
 	msg := c.Message().Text
 
 	// Разобрать сообщение на сервис и метрику
-	service, metric, _, err := parseMsg(msg)
+	service, metric, value, err := parseMsg(msg)
 	if err != nil {
 		return errors.New(
 			errMsg +
@@ -340,16 +389,70 @@ func handleCompleteTask(
 		)
 	}
 
-	// Удалить сообщение
-	err = b.Delete(
-		c.Message(),
+	// Триггеры, относящиеся к данному значению
+	relatedTriggers, err := _db.SelectTriggersByServiceMetricAndValue(
+		service,
+		metric,
+		value,
 	)
 	if err != nil {
 		return errors.New(
 			errMsg +
-				"can't delete message: " +
 				err.Error(),
 		)
+	}
+
+	// Пользователи, заинтересованные
+	// в оповещении о данном значении
+	var interestedUsers []string
+	for _, trigger := range relatedTriggers {
+		interestedUsers = append(
+			interestedUsers,
+			trigger.User,
+		)
+	}
+
+	// Эндпоинты пользователей,
+	// заинтересованных в данном значении
+	var relatedEndpoints []db.Endpoint
+	for _, user := range interestedUsers {
+
+		endpoint, err := _db.SelectEndpointByMessengerAndUser(
+			messengerName,
+			user,
+		)
+		if err != nil {
+			return errors.New(
+				errMsg +
+					err.Error(),
+			)
+		}
+
+		relatedEndpoints = append(
+			relatedEndpoints,
+			endpoint,
+		)
+	}
+
+	for _, endpoint := range relatedEndpoints {
+
+		_, err = b.Send(
+			recipient{
+				endpoint,
+			},
+			fmt.Sprintf(
+				`%s
+Status: Completed`,
+				c.Message().Text,
+			),
+		)
+		if err != nil {
+			return errors.New(
+				errMsg +
+					"can't send message after complete: " +
+					err.Error(),
+			)
+		}
 	}
 
 	return nil

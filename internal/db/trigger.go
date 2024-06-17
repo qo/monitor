@@ -211,7 +211,11 @@ func (db *DB) SelectTriggerByServiceMetricValueMessengerAndUser(
 
 	row := db.QueryRow(
 		query,
+		service,
+		metric,
+		value,
 		messenger,
+		user,
 	)
 
 	var trigger Trigger
@@ -268,4 +272,75 @@ func (db *DB) DeleteTrigger(
 	}
 
 	return nil
+}
+
+// Выбрать триггер по сервису, метрике, значению, мессенджеру и пользователю
+func (db *DB) SelectTriggersByServiceMetricAndValue(
+	service string,
+	metric string,
+	value string,
+) (
+	[]Trigger,
+	error,
+) {
+
+	errMsg := "can't select triggers by service, metric and value: "
+
+	query := `
+		SELECT *
+		FROM trigger
+		WHERE service = ?
+		AND metric= ?
+		AND value = ?;
+	`
+
+	rows, err := db.Query(
+		query,
+		service,
+		metric,
+		value,
+	)
+
+	if err != nil {
+		return nil,
+			errors.New(
+				errMsg +
+					"can't query: " +
+					err.Error(),
+			)
+	}
+
+	defer rows.Close()
+
+	var triggers []Trigger
+
+	for rows.Next() {
+
+		var trigger Trigger
+
+		err = rows.Scan(
+			&trigger.Service,
+			&trigger.Metric,
+			&trigger.Value,
+			&trigger.Messenger,
+			&trigger.User,
+		)
+
+		if err != nil {
+			return nil,
+				errors.New(
+					errMsg +
+						"can't scan: " +
+						err.Error(),
+				)
+		}
+
+		triggers = append(
+			triggers,
+			trigger,
+		)
+	}
+
+	return triggers,
+		nil
 }
